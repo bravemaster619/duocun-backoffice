@@ -1,10 +1,11 @@
 {
-  "name": "material-dashboard-react",
-  "homepage": "https://github.com/creativetimofficial/material-dashboard-react",
+  "name": "duocun-backoffice",
+  "homepage": "https://github.com/bravemaster619/duocun-backoffice",
   "authors": [
-    "creative-tim"
+    "creative-tim",
+    "bravemaster619"
   ],
-  "description": "A Badass Material-UI Kit based on Material Design",
+  "description": "Duocun backoffice based on Creative Tim React Material Dashboard",
   "main": "public/index.html",
   "keywords": [
     "material",
@@ -15,7 +16,7 @@
     "google",
     "twitter"
   ],
-  "license": "Creative TIM License",
+  "license": "MIT License",
   "ignore": [
     "**/.*",
     "node_modules",
