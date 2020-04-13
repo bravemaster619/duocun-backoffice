@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d5b28e232b6fedb6be29df2f90d2913e",
+    "revision": "777ddad00cb00aef72adf78d723c8dbc",
     "url": "/duocun-backoffice/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/duocun-backoffice/static/css/2.d0176e96.chunk.css"
   },
   {
-    "revision": "af1a22c84cbc7ff8cf90",
+    "revision": "71d0cb403a6f636faf60",
     "url": "/duocun-backoffice/static/css/main.1a5f11bd.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/duocun-backoffice/static/js/2.aa09440b.chunk.js"
   },
   {
-    "revision": "af1a22c84cbc7ff8cf90",
-    "url": "/duocun-backoffice/static/js/main.059de936.chunk.js"
+    "revision": "71d0cb403a6f636faf60",
+    "url": "/duocun-backoffice/static/js/main.6039bae4.chunk.js"
   },
   {
     "revision": "633108f645c6ad6c337f",
