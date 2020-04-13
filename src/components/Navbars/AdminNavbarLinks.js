@@ -52,6 +52,9 @@ const AdminNavbarLinks = ({ signOut }) => {
       setOpenProfile(event.currentTarget);
     }
   };
+  const handleCloseProfile = event => {
+    setOpenProfile(null);
+  };
   const handleLogout = () => {
     AuthService.logout();
     signOut();
@@ -201,14 +204,16 @@ const AdminNavbarLinks = ({ signOut }) => {
               }}
             >
               <Paper>
-                <MenuList role="menu">
-                  <MenuItem
-                    onClick={handleLogout}
-                    className={classes.dropdownItem}
-                  >
-                    {t("Logout")}
-                  </MenuItem>
-                </MenuList>
+                <ClickAwayListener onClickAway={handleCloseProfile}>
+                  <MenuList role="menu">
+                    <MenuItem
+                      onClick={handleLogout}
+                      className={classes.dropdownItem}
+                    >
+                      {t("Logout")}
+                    </MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
               </Paper>
             </Grow>
           )}
