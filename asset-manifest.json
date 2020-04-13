@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.1a5f11bd.chunk.css",
-    "main.js": "/static/js/main.74048259.chunk.js",
-    "main.js.map": "/static/js/main.74048259.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.6cea818d.js",
-    "runtime~main.js.map": "/static/js/runtime~main.6cea818d.js.map",
-    "static/css/2.d0176e96.chunk.css": "/static/css/2.d0176e96.chunk.css",
-    "static/js/2.aa09440b.chunk.js": "/static/js/2.aa09440b.chunk.js",
-    "static/js/2.aa09440b.chunk.js.map": "/static/js/2.aa09440b.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.549156bad82937468ab215adde623c17.js": "/precache-manifest.549156bad82937468ab215adde623c17.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.d0176e96.chunk.css.map": "/static/css/2.d0176e96.chunk.css.map",
-    "static/css/main.1a5f11bd.chunk.css.map": "/static/css/main.1a5f11bd.chunk.css.map",
-    "static/media/marc.jpg": "/static/media/marc.8880a65c.jpg",
-    "static/media/sidebar-2.jpg": "/static/media/sidebar-2.310509c9.jpg"
+    "main.css": "/duocun-backoffice/static/css/main.1a5f11bd.chunk.css",
+    "main.js": "/duocun-backoffice/static/js/main.059de936.chunk.js",
+    "main.js.map": "/duocun-backoffice/static/js/main.059de936.chunk.js.map",
+    "runtime~main.js": "/duocun-backoffice/static/js/runtime~main.98f18587.js",
+    "runtime~main.js.map": "/duocun-backoffice/static/js/runtime~main.98f18587.js.map",
+    "static/css/2.d0176e96.chunk.css": "/duocun-backoffice/static/css/2.d0176e96.chunk.css",
+    "static/js/2.aa09440b.chunk.js": "/duocun-backoffice/static/js/2.aa09440b.chunk.js",
+    "static/js/2.aa09440b.chunk.js.map": "/duocun-backoffice/static/js/2.aa09440b.chunk.js.map",
+    "index.html": "/duocun-backoffice/index.html",
+    "precache-manifest.7f4ac6c253fd37406b605996271d8047.js": "/duocun-backoffice/precache-manifest.7f4ac6c253fd37406b605996271d8047.js",
+    "service-worker.js": "/duocun-backoffice/service-worker.js",
+    "static/css/2.d0176e96.chunk.css.map": "/duocun-backoffice/static/css/2.d0176e96.chunk.css.map",
+    "static/css/main.1a5f11bd.chunk.css.map": "/duocun-backoffice/static/css/main.1a5f11bd.chunk.css.map",
+    "static/media/marc.jpg": "/duocun-backoffice/static/media/marc.8880a65c.jpg",
+    "static/media/sidebar-2.jpg": "/duocun-backoffice/static/media/sidebar-2.310509c9.jpg"
   }
 }
