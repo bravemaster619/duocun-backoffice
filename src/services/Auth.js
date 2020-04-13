@@ -7,16 +7,15 @@ const Auth = () => {
     },
     logout: () => {
       window.localStorage.removeItem(TOKEN_KEY);
-      window.location.href = "/admin/login";
     },
-    isAuthenticated: () => {
+    isLoggedIn: () => {
       return !!window.localStorage.getItem(TOKEN_KEY);
     },
     getAuthToken: () => {
       return window.localStorage.getItem(TOKEN_KEY);
     },
     isAuthorized: user => {
-      return user._id && user.roles.includes(ADMIN_ROLE_ID);
+      return user && user._id && user.roles.includes(ADMIN_ROLE_ID);
     }
   };
 };
