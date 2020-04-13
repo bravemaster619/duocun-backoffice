@@ -23,10 +23,12 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import lang from "./assets/i18n";
+// auth service
+import Auth from "service/Auth.js";
 // core components
 import Admin from "layouts/Admin.js";
 import Login from "views/Login/Login.js";
-
+// styles
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 
 const hist = createBrowserHistory();
@@ -38,8 +40,7 @@ i18n.use(initReactI18next).init({
     escapeValue: false
   }
 });
-
-ReactDOM.render(
+const routes = Auth.isAuthenticated() ? (
   <Router history={hist}>
     <Switch>
       <Route path="/admin/login" component={Login} />
@@ -47,6 +48,13 @@ ReactDOM.render(
       <Redirect from="/login" to="/admin/login" />
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
-  </Router>,
-  document.getElementById("root")
+  </Router>
+) : (
+  <Router history={hist}>
+    <Switch>
+      <Route path="/admin/login" component={Login} />
+      <Redirect from="/" to="/admin/login" />
+    </Switch>
+  </Router>
 );
+ReactDOM.render(routes, document.getElementById("root"));
