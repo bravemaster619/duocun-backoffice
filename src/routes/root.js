@@ -22,13 +22,13 @@ const Root = props => {
   }, [props]);
 
   return isAuthorized ? (
-    <Router history={history}>
+    <Router history={history} basename="/duocun-backoffice">
       <Switch>
         <Route path="/" component={Admin} />
       </Switch>
     </Router>
   ) : (
-    <Router history={history}>
+    <Router history={history} basename="/duocun-backoffice">
       <Switch>
         <Route path="/login" component={Login} />
         <Redirect from="/" to="/login" />
