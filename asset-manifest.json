@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1a5f11bd.chunk.css",
+    "main.js": "/static/js/main.74048259.chunk.js",
+    "main.js.map": "/static/js/main.74048259.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.6cea818d.js",
+    "runtime~main.js.map": "/static/js/runtime~main.6cea818d.js.map",
+    "static/css/2.d0176e96.chunk.css": "/static/css/2.d0176e96.chunk.css",
+    "static/js/2.aa09440b.chunk.js": "/static/js/2.aa09440b.chunk.js",
+    "static/js/2.aa09440b.chunk.js.map": "/static/js/2.aa09440b.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.549156bad82937468ab215adde623c17.js": "/precache-manifest.549156bad82937468ab215adde623c17.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.d0176e96.chunk.css.map": "/static/css/2.d0176e96.chunk.css.map",
+    "static/css/main.1a5f11bd.chunk.css.map": "/static/css/main.1a5f11bd.chunk.css.map",
+    "static/media/marc.jpg": "/static/media/marc.8880a65c.jpg",
+    "static/media/sidebar-2.jpg": "/static/media/sidebar-2.310509c9.jpg"
+  }
+}
