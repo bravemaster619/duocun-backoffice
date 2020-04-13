@@ -24,7 +24,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import lang from "./assets/i18n";
 // auth service
-import Auth from "service/Auth.js";
+import Auth from "services/Auth.js";
 // core components
 import Admin from "layouts/Admin.js";
 import Login from "views/Login/Login.js";
