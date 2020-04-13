@@ -7,7 +7,9 @@ import { signIn } from "redux/actions";
 import AuthService from "services/Auth";
 import Admin from "layouts/Admin.js";
 import Login from "views/Login/Login.js";
-const history = createBrowserHistory();
+const history = createBrowserHistory({
+  basename: "/duocun-backoffice"
+});
 const Root = props => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -22,13 +24,13 @@ const Root = props => {
   }, [props]);
 
   return isAuthorized ? (
-    <Router history={history} basename="/duocun-backoffice">
+    <Router history={history}>
       <Switch>
         <Route path="/" component={Admin} />
       </Switch>
     </Router>
   ) : (
-    <Router history={history} basename="/duocun-backoffice">
+    <Router history={history}>
       <Switch>
         <Route path="/login" component={Login} />
         <Redirect from="/" to="/login" />
