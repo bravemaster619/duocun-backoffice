@@ -11,6 +11,9 @@ const Auth = () => {
     },
     isAuthenticated: () => {
       return !!window.localStorage.getItem(TOKEN_KEY);
+    },
+    getAuthToken: () => {
+      return window.localStorage.getItem(TOKEN_KEY);
     }
   };
 };
