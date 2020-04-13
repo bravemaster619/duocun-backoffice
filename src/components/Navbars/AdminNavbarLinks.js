@@ -52,7 +52,7 @@ const AdminNavbarLinks = ({ signOut }) => {
       setOpenProfile(event.currentTarget);
     }
   };
-  const handleCloseProfile = event => {
+  const handleCloseProfile = () => {
     setOpenProfile(null);
   };
   const handleLogout = () => {
@@ -225,7 +225,7 @@ const AdminNavbarLinks = ({ signOut }) => {
 
 AdminNavbarLinks.propTypes = {
   signOut: PropTypes.func
-}
+};
 
 const mapDispatchToProps = dispatch => ({
   signOut: () => dispatch(signOut())
