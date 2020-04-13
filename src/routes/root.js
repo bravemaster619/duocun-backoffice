@@ -19,7 +19,7 @@ const Root = props => {
     if (AuthService.isLoggedIn()) {
       props.signIn();
     }
-  }, []);
+  }, [props]);
 
   return isAuthorized ? (
     <Router history={history}>
