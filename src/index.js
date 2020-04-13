@@ -19,7 +19,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
-
+// i18n
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import lang from "./assets/i18n";
 // core components
 import Admin from "layouts/Admin.js";
 import Login from "views/Login/Login.js";
@@ -27,6 +30,14 @@ import Login from "views/Login/Login.js";
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 
 const hist = createBrowserHistory();
+i18n.use(initReactI18next).init({
+  resources: lang,
+  lng: "en",
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false
+  }
+});
 
 ReactDOM.render(
   <Router history={hist}>
