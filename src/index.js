@@ -32,7 +32,7 @@ import "assets/css/material-dashboard-react.css?v=1.8.0";
 const hist = createBrowserHistory();
 i18n.use(initReactI18next).init({
   resources: lang,
-  lng: "en",
+  lng: process.env.NODE_ENV === "production" ? "zh" : "en",
   fallbackLng: "en",
   interpolation: {
     escapeValue: false
