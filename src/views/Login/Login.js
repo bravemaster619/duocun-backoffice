@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
@@ -13,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import { useTranslation } from "react-i18next";
 import HttpService from "services/Http";
 import AuthService from "services/Auth";
+import { signIn, signOut } from "redux/actions";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -34,13 +36,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Login() {
+const Login = ({ signIn, history, isAuthorized }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [failed, setFailed] = useState(false);
-  const history = useHistory();
   const handleLogin = () => {
     HttpService.post("Accounts/login", {
       username,
@@ -54,8 +55,12 @@ export default function Login() {
           }).then(({ data }) => {
             if (AuthService.isAuthorized(data)) {
               AuthService.login(tokenId);
-              history.push("/");
+              signIn();
+              history.push("/admin/dashboard");
             } else {
+              if (isAuthorized) {
+                signOut();
+              }
               setFailed(true);
             }
           });
@@ -120,4 +125,25 @@ export default function Login() {
       </div>
     </Container>
   );
-}
+};
+
+Login.propTypes = {
+  signIn: PropTypes.func,
+  signOut: PropTypes.func,
+  history: PropTypes.object,
+  isAuthorized: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+  isAuthorized: state.isAuthorized
+});
+
+const mapDispatchToProps = dispatch => ({
+  signIn: () => dispatch(signIn()),
+  signOut: () => dispatch(signOut())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

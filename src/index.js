@@ -1,37 +1,16 @@
-/*!
-
-=========================================================
-* Material Dashboard React - v1.8.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import rootReducer from "./redux/reducers";
 // i18n
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import lang from "./assets/i18n";
-// auth service
-import Auth from "services/Auth.js";
-// core components
-import Admin from "layouts/Admin.js";
-import Login from "views/Login/Login.js";
+import Root from "./routes/root";
 // styles
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 
-const hist = createBrowserHistory();
 i18n.use(initReactI18next).init({
   resources: lang,
   lng: process.env.NODE_ENV === "production" ? "zh" : "en",
@@ -40,21 +19,12 @@ i18n.use(initReactI18next).init({
     escapeValue: false
   }
 });
-const routes = Auth.isAuthenticated() ? (
-  <Router history={hist}>
-    <Switch>
-      <Route path="/admin/login" component={Login} />
-      <Route path="/admin" component={Admin} />
-      <Redirect from="/login" to="/admin/login" />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </Router>
-) : (
-  <Router history={hist}>
-    <Switch>
-      <Route path="/admin/login" component={Login} />
-      <Redirect from="/" to="/admin/login" />
-    </Switch>
-  </Router>
+
+const store = createStore(rootReducer);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Root />
+  </Provider>,
+  document.getElementById("root")
 );
-ReactDOM.render(routes, document.getElementById("root"));
