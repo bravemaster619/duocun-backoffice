@@ -199,16 +199,14 @@ const AdminNavbarLinks = ({ signOut }) => {
               }}
             >
               <Paper>
-                <ClickAwayListener onClickAway={handleLogout}>
-                  <MenuList role="menu">
-                    <MenuItem
-                      onClick={handleLogout}
-                      className={classes.dropdownItem}
-                    >
-                      {t("Logout")}
-                    </MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
+                <MenuList role="menu">
+                  <MenuItem
+                    onClick={handleLogout}
+                    className={classes.dropdownItem}
+                  >
+                    {t("Logout")}
+                  </MenuItem>
+                </MenuList>
               </Paper>
             </Grow>
           )}
