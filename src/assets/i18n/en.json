@@ -1,5 +1,7 @@
 {
     "Username": "Username",
     "Password": "Password",
-    "Sign In": "Sign In"
+    "Sign In": "Sign In",
+    "Login failed": "Login failed",
+    "Logout": "Logout"
 }

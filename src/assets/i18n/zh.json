@@ -1,5 +1,7 @@
 {
     "Username": "用户名",
     "Password": "密码",
-    "Sign In": "登录"
+    "Sign In": "登录",
+    "Login failed": "用户名或密码错误",
+    "Logout": "Logout"
 }
