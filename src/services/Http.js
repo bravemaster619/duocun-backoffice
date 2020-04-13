@@ -5,7 +5,7 @@ import Auth from "./Auth";
 const Http = () => {
   const API_HOST =
     process.env.NODE_ENV === "production"
-      ? "http://localhost:8000/api"
+      ? "https://1fcee761-fa67-402e-aca9-d57991a9f60c.mock.pstmn.io"
       : "http://localhost:8000/api";
 
   const buildUrl = (url, param = null) => {
