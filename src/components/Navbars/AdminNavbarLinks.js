@@ -29,7 +29,9 @@ const useStyles = makeStyles(styles);
 
 const AdminNavbarLinks = ({ signOut }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const history = useHistory({
+    basename: "duocun-backoffice"
+  });
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
