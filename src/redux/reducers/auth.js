@@ -1,4 +1,9 @@
-export default function authReducer(state = { isAuthorized: false }, action) {
+import AuthService from "services/Auth.js";
+
+export default function authReducer(
+  state = { isAuthorized: AuthService.isLoggedIn() },
+  action
+) {
   switch (action.type) {
     case "SIGN_IN":
       return {

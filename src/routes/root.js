@@ -11,7 +11,7 @@ const history = createBrowserHistory({
   basename: "/duocun-backoffice"
 });
 const Root = props => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(AuthService.isLoggedIn());
 
   useEffect(() => {
     setIsAuthorized(props.isAuthorized);
