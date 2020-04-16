@@ -3,5 +3,9 @@
     "Password": "Password",
     "Sign In": "Sign In",
     "Login failed": "Login failed",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Rows per page": "Rows per page",
+    "Display": "Display",
+    "Product": "Product",
+    "Products": "Products"
 }

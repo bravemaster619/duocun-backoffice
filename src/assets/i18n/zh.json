@@ -3,5 +3,9 @@
     "Password": "密码",
     "Sign In": "登录",
     "Login failed": "用户名或密码错误",
-    "Logout": "登出"
+    "Logout": "登出",
+    "Rows per page": "Rows per page",
+    "Display": "显示",
+    "Product": "菜品",
+    "Products": "菜品"
 }
