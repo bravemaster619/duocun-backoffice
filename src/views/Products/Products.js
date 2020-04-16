@@ -1,32 +1,106 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import { makeStyles } from "@material-ui/core/styles";
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-// import CardFooter from "components/Card/CardFooter.js";
+import CardFooter from "components/Card/CardFooter.js";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-// import TablePagination from "@material-ui/core/TablePagination";
+import TablePagination from "components/Table/TablePagniation.js";
 import TableRow from "@material-ui/core/TableRow";
+import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CheckIcon from "@material-ui/icons/Check";
+import CloseIcon from "@material-ui/icons/Close";
+import Avatar from "@material-ui/core/Avatar";
+import LocalMallIcon from "@material-ui/icons/LocalMall";
+import TableBodySkeleton from "components/Table/TableBodySkeleton";
 
+import ApiProductService from "services/api/ApiProductService";
+import { getQueryParam } from "helper/index";
 const useStyles = makeStyles(() => ({
   table: {
     minWidth: 750
   }
 }));
 
-export default function Product() {
+export default function Product({ location }) {
   const { t } = useTranslation();
-
   const classes = useStyles();
+  const [products, setProducts] = useState([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(
+    getQueryParam(location, "page")
+      ? parseInt(getQueryParam(location, "page"))
+      : 0
+  );
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const renderRows = rows => {
+    if (!rows.length) {
+      return (
+        <TableRow>
+          <TableCell colSpan={6}>{t("No data to display")}</TableCell>
+        </TableRow>
+      );
+    }
+    return (
+      <>
+        {rows.map((row, idx) => (
+          <TableRow key={idx}>
+            <TableCell>{page * rowsPerPage + idx + 1}</TableCell>
+            <TableCell>
+              <Avatar
+                variant="square"
+                alt="product"
+                src={
+                  row.pictures && row.pictures[0] ? row.pictures[0].url : "#"
+                }
+              >
+                <LocalMallIcon></LocalMallIcon>
+              </Avatar>
+            </TableCell>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.price.toFixed(2)}</TableCell>
+            <TableCell>{row.cost.toFixed(2)}</TableCell>
+            <TableCell>
+              {row.featured ? (
+                <CheckIcon color="primary"></CheckIcon>
+              ) : (
+                <CloseIcon color="error"></CloseIcon>
+              )}
+            </TableCell>
+            <TableCell>
+              <IconButton aria-label="edit">
+                <EditIcon></EditIcon>
+              </IconButton>
+              <IconButton aria-label="delete">
+                <DeleteIcon></DeleteIcon>
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        ))}
+      </>
+    );
+  };
+
+  useEffect(() => {
+    ApiProductService.getProductList(page, rowsPerPage).then(({ data }) => {
+      setProducts(data.data);
+      setTotalRows(data.meta.count);
+      setLoading(false);
+    });
+  }, [page, rowsPerPage]);
 
   return (
     <div>
@@ -34,7 +108,7 @@ export default function Product() {
         <GridItem xs={12}>
           <Card>
             <CardHeader color="primary">
-              <h4>{t("Product Table")}</h4>
+              <h4>{t("Products")}</h4>
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -43,38 +117,52 @@ export default function Product() {
                     <Table
                       className={classes.table}
                       aria-label="Product Table"
-                      size="medium"
+                      size="small"
                     >
                       <TableHead>
                         <TableRow>
-                          <TableCell>ID</TableCell>
+                          <TableCell>#</TableCell>
                           <TableCell>Image</TableCell>
                           <TableCell>Name</TableCell>
                           <TableCell>Price</TableCell>
+                          <TableCell>Cost</TableCell>
                           <TableCell>Featured</TableCell>
                           <TableCell>Actions</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        <TableRow>
-                          <TableCell>1</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell>Sample Product</TableCell>
-                          <TableCell>9.99 USD</TableCell>
-                          <TableCell>O</TableCell>
-                          <TableCell>
-                            <EditIcon></EditIcon>
-                          </TableCell>
-                        </TableRow>
+                        {loading ? (
+                          <TableBodySkeleton colCount={6} />
+                        ) : (
+                          renderRows(products)
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 </GridItem>
               </GridContainer>
             </CardBody>
+            <CardFooter>
+              {!loading && (
+                <TablePagination
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={(e, newPage) => setPage(newPage)}
+                  count={totalRows}
+                  onChangeRowsPerPage={({ target }) => {
+                    setPage(0);
+                    setRowsPerPage(target.value);
+                  }}
+                ></TablePagination>
+              )}
+            </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
     </div>
   );
 }
+
+Product.propTypes = {
+  location: PropTypes.object
+};

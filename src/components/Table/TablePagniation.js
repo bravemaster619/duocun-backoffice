@@ -11,7 +11,9 @@ export default function TablePagination(props) {
       count={2}
       {...props}
       labelRowsPerPage={t("Rows per page")}
-      labelDisplayedRows={({ from, to }) => t("Display") + `: ${from} - ${to}`}
+      labelDisplayedRows={({ from, to, count }) =>
+        `${t("Total")}: ${count} ${t("Display")}: ${from} - ${to}`
+      }
     ></MuiTablePagination>
   );
 }
