@@ -1,4 +1,4 @@
-import AuthService from "services/Auth.js";
+import AuthService from "services/AuthService.js";
 
 export default function authReducer(
   state = { isAuthorized: AuthService.isLoggedIn() },

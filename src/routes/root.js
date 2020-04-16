@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { signIn } from "redux/actions";
-import AuthService from "services/Auth";
+import AuthService from "services/AuthService";
 import Admin from "layouts/Admin.js";
 import Login from "views/Login/Login.js";
 const history = createBrowserHistory({

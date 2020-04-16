@@ -12,8 +12,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useTranslation } from "react-i18next";
-import HttpService from "services/Http";
-import AuthService from "services/Auth";
+import AuthService from "services/AuthService";
+import ApiAuthService from "services/api/ApiAuthService";
 import { signIn, signOut } from "redux/actions";
 
 const useStyles = makeStyles(theme => ({
@@ -43,18 +43,12 @@ const Login = ({ signIn, history, isAuthorized }) => {
   const [password, setPassword] = useState("");
   const [failed, setFailed] = useState(false);
   const handleLogin = () => {
-    HttpService.post("Accounts/login", {
-      username,
-      password
-    })
+    ApiAuthService.login(username, password)
       .then(({ data }) => {
         if (data) {
-          const tokenId = data;
-          HttpService.get("Accounts/current", {
-            tokenId
-          }).then(({ data }) => {
+          ApiAuthService.getCurrentUser(data).then(({ data }) => {
             if (AuthService.isAuthorized(data)) {
-              AuthService.login(tokenId);
+              AuthService.login(data);
               signIn();
               history.push("/admin/dashboard");
             } else {
@@ -68,7 +62,8 @@ const Login = ({ signIn, history, isAuthorized }) => {
           setFailed(true);
         }
       })
-      .catch(() => {
+      .catch(e => {
+        console.error(e);
         setFailed(true);
       });
   };

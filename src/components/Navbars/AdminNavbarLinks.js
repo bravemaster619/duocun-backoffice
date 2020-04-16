@@ -22,7 +22,7 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import { useTranslation } from "react-i18next";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
-import AuthService from "services/Auth";
+import AuthService from "services/AuthService";
 import { signOut } from "redux/actions";
 
 const useStyles = makeStyles(styles);
