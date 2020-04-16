@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // @material-ui/core components
@@ -19,11 +20,12 @@ const useStyles = makeStyles(styles);
 
 export default function Header(props) {
   const classes = useStyles();
+  const { t } = useTranslation();
   function makeBrand() {
     var name;
     props.routes.map(prop => {
       if (window.location.href.indexOf(prop.path) !== -1) {
-        name = prop.name;
+        name = t(prop.name);
       }
       return null;
     });
