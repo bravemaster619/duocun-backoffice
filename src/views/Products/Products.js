@@ -24,7 +24,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Avatar from "@material-ui/core/Avatar";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import TableBodySkeleton from "components/Table/TableBodySkeleton";
-
+import Searchbar from "components/Searchbar/Searchbar";
 import ApiProductService from "services/api/ApiProductService";
 import { getQueryParam } from "helper/index";
 const useStyles = makeStyles(() => ({
@@ -44,13 +44,24 @@ export default function Product({ location }) {
       ? parseInt(getQueryParam(location, "page"))
       : 0
   );
+  const [query, setQuery] = useState(getQueryParam(location, "search") || "");
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const updateData = () => {
+    ApiProductService.getProductList(page, rowsPerPage, query).then(
+      ({ data }) => {
+        setProducts(data.data);
+        setTotalRows(data.meta.count);
+        setLoading(false);
+      }
+    );
+  };
   const renderRows = rows => {
     if (!rows.length) {
       return (
         <TableRow>
-          <TableCell colSpan={6}>{t("No data to display")}</TableCell>
+          <TableCell align="center" colSpan={7}>
+            {t("No data to display")}
+          </TableCell>
         </TableRow>
       );
     }
@@ -95,11 +106,8 @@ export default function Product({ location }) {
   };
 
   useEffect(() => {
-    ApiProductService.getProductList(page, rowsPerPage).then(({ data }) => {
-      setProducts(data.data);
-      setTotalRows(data.meta.count);
-      setLoading(false);
-    });
+    updateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage]);
 
   return (
@@ -108,7 +116,27 @@ export default function Product({ location }) {
         <GridItem xs={12}>
           <Card>
             <CardHeader color="primary">
-              <h4>{t("Products")}</h4>
+              <GridContainer>
+                <GridItem xs={12} lg={6}>
+                  <h4>{t("Products")}</h4>
+                </GridItem>
+                <GridItem xs={12} lg={6} align="right">
+                  <Searchbar
+                    onChange={e => {
+                      const { target } = e;
+                      setQuery(target.value);
+                    }}
+                    onSearch={() => {
+                      setLoading(true);
+                      if (page === 0) {
+                        updateData();
+                      } else {
+                        setPage(0);
+                      }
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -122,17 +150,17 @@ export default function Product({ location }) {
                       <TableHead>
                         <TableRow>
                           <TableCell>#</TableCell>
-                          <TableCell>Image</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>Price</TableCell>
-                          <TableCell>Cost</TableCell>
-                          <TableCell>Featured</TableCell>
-                          <TableCell>Actions</TableCell>
+                          <TableCell>{t("Image")}</TableCell>
+                          <TableCell>{t("Name")}</TableCell>
+                          <TableCell>{t("Price")}</TableCell>
+                          <TableCell>{t("Cost")}</TableCell>
+                          <TableCell>{t("Featured")}</TableCell>
+                          <TableCell>{t("Actions")}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {loading ? (
-                          <TableBodySkeleton colCount={6} />
+                          <TableBodySkeleton colCount={7} />
                         ) : (
                           renderRows(products)
                         )}

@@ -7,5 +7,12 @@
     "Rows per page": "Rows per page",
     "Display": "Display",
     "Product": "Product",
-    "Products": "Products"
+    "Products": "Products",
+    "Image": "Image",
+    "No": "#",
+    "Product Name": "Product Name",
+    "Price": "Price",
+    "Cost": "Cost",
+    "Featured": "Featured",
+    "Actions": "Actions"
 }
