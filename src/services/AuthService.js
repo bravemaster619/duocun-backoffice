@@ -1,4 +1,4 @@
-const Auth = () => {
+const AuthService = () => {
   const TOKEN_KEY = "duocun_admin_token";
   const ADMIN_ROLE_ID = 1;
   return {
@@ -20,4 +20,4 @@ const Auth = () => {
   };
 };
 
-export default Auth();
+export default AuthService();
