@@ -16,5 +16,57 @@ describe("helper", () => {
     it("should return empty string if query key is missing", () => {
       expect(helper.getQueryParam(location, "abc")).to.equals("");
     });
-  })
+  });
+  describe("buildPaginationQuery", () => {
+    const page = 2;
+    const pageSize = 20;
+    const condition = {
+      "status": 1
+    };
+    const fields = ["name", "description"];
+    it("should set where, limit and skip", () => {
+      expect(helper.buildPaginationQuery()).to.equals(JSON.stringify({
+        where: {},
+        options: {
+          limit: 10,
+          skip: 0
+        }
+      }))
+    });
+    it("should correctly set limit and skip options", () => {
+      expect(helper.buildPaginationQuery(page, pageSize)).to.equals(JSON.stringify({
+        where: {},
+        options: {
+          limit: 20,
+          skip: 40
+        }
+      }));
+    });
+    it("should correctly set where condition", () => {
+      expect(helper.buildPaginationQuery(page, pageSize, condition)).to.equals(JSON.stringify({
+        where: {
+          status: 1
+        },
+        options: {
+          limit: 20,
+          skip: 40
+        }
+      }));
+    });
+    it("should correctly set projection option", () => {
+      expect(helper.buildPaginationQuery(page, pageSize, condition, fields)).to.equals(JSON.stringify({
+        where: {
+          status: 1,
+        },
+        options: {
+          limit: 20,
+          skip: 40,
+          projection: {
+            name: true,
+            description: true
+          }
+        }
+      }))
+    });
+  });
 });
