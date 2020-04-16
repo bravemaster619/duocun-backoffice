@@ -16,12 +16,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "components/Table/TablePagniation.js";
 import TableRow from "@material-ui/core/TableRow";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import Avatar from "@material-ui/core/Avatar";
+import Alert from "@material-ui/lab/Alert";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import TableBodySkeleton from "components/Table/TableBodySkeleton";
 import Searchbar from "components/Searchbar/Searchbar";
@@ -32,28 +34,78 @@ const useStyles = makeStyles(() => ({
     minWidth: 750
   }
 }));
-
 export default function Product({ location }) {
   const { t } = useTranslation();
   const classes = useStyles();
+  // states related to list and pagniation
   const [products, setProducts] = useState([]);
-  const [totalRows, setTotalRows] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(
     getQueryParam(location, "page")
       ? parseInt(getQueryParam(location, "page"))
       : 0
   );
-  const [query, setQuery] = useState(getQueryParam(location, "search") || "");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRows, setTotalRows] = useState(0);
+  const [query, setQuery] = useState(getQueryParam(location, "search") || "");
+  const [sort, setSort] = useState(["_id", 1]);
+
+  // states related to processing
+  const [alert, setAlert] = useState({ message: "", severity: "info" });
+  const [processing, setProcessing] = useState(false);
+
   const updateData = () => {
-    ApiProductService.getProductList(page, rowsPerPage, query).then(
+    ApiProductService.getProductList(page, rowsPerPage, query, [sort]).then(
       ({ data }) => {
         setProducts(data.data);
         setTotalRows(data.meta.count);
         setLoading(false);
       }
     );
+  };
+  const toggleSort = fieldName => {
+    // sort only one field
+    if (sort && sort[0] === fieldName) {
+      setSort([fieldName, sort[1] === 1 ? -1 : 1]);
+    } else {
+      setSort([fieldName, 1]);
+    }
+  };
+  const removeAlert = () => {
+    setAlert({
+      message: "",
+      severity: "info"
+    });
+  };
+
+  const toggleFeature = productId => {
+    removeAlert();
+    setProcessing(true);
+    ApiProductService.toggleFeature(productId)
+      .then(({ data }) => {
+        if (data.success) {
+          setAlert({
+            message: t("Product saved successfully"),
+            severtiy: "success"
+          });
+          updateData();
+        } else {
+          setAlert({
+            message: t("Product save failed"),
+            severity: "error"
+          });
+        }
+      })
+      .catch(e => {
+        console.error(e);
+        setAlert({
+          message: t("Product save failed"),
+          severity: "error"
+        });
+      })
+      .finally(() => {
+        setProcessing(false);
+      });
   };
   const renderRows = rows => {
     if (!rows.length) {
@@ -82,14 +134,21 @@ export default function Product({ location }) {
               </Avatar>
             </TableCell>
             <TableCell>{row.name}</TableCell>
-            <TableCell>{row.price.toFixed(2)}</TableCell>
-            <TableCell>{row.cost.toFixed(2)}</TableCell>
+            <TableCell>{row.price}</TableCell>
+            <TableCell>{row.cost}</TableCell>
             <TableCell>
-              {row.featured ? (
-                <CheckIcon color="primary"></CheckIcon>
-              ) : (
-                <CloseIcon color="error"></CloseIcon>
-              )}
+              <IconButton
+                disabled={processing}
+                onClick={() => {
+                  toggleFeature(row._id);
+                }}
+              >
+                {row.featured ? (
+                  <CheckIcon color="primary"></CheckIcon>
+                ) : (
+                  <CloseIcon color="error"></CloseIcon>
+                )}
+              </IconButton>
             </TableCell>
             <TableCell>
               <IconButton aria-label="edit">
@@ -104,11 +163,22 @@ export default function Product({ location }) {
       </>
     );
   };
+  const renderSort = fieldName => {
+    return (
+      <TableSortLabel
+        active={sort && sort[0] === fieldName}
+        direction={sort && sort[1] === -1 ? "desc" : "asc"}
+        onClick={() => {
+          toggleSort(fieldName);
+        }}
+      ></TableSortLabel>
+    );
+  };
 
   useEffect(() => {
     updateData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, sort]);
 
   return (
     <div>
@@ -140,6 +210,13 @@ export default function Product({ location }) {
             </CardHeader>
             <CardBody>
               <GridContainer>
+                {!!alert.message && (
+                  <GridItem xs={12}>
+                    <Alert severity={alert.severity} onClose={removeAlert}>
+                      {alert.message}
+                    </Alert>
+                  </GridItem>
+                )}
                 <GridItem xs={12}>
                   <TableContainer>
                     <Table
@@ -151,16 +228,51 @@ export default function Product({ location }) {
                         <TableRow>
                           <TableCell>#</TableCell>
                           <TableCell>{t("Image")}</TableCell>
-                          <TableCell>{t("Name")}</TableCell>
-                          <TableCell>{t("Price")}</TableCell>
-                          <TableCell>{t("Cost")}</TableCell>
-                          <TableCell>{t("Featured")}</TableCell>
+                          <TableCell
+                            onClick={() => {
+                              toggleSort("name");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("Name")}
+                            {renderSort("name")}
+                          </TableCell>
+                          <TableCell
+                            onClick={() => {
+                              toggleSort("price");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("Price")}
+                            {renderSort("price")}
+                          </TableCell>
+                          <TableCell
+                            onClick={() => {
+                              toggleSort("cost");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("Cost")}
+                            {renderSort("cost")}
+                          </TableCell>
+                          <TableCell
+                            onClick={() => {
+                              toggleSort("featured");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {t("Featured")}
+                            {renderSort("featured")}
+                          </TableCell>
                           <TableCell>{t("Actions")}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {loading ? (
-                          <TableBodySkeleton colCount={7} />
+                          <TableBodySkeleton
+                            colCount={7}
+                            rowCount={rowsPerPage}
+                          />
                         ) : (
                           renderRows(products)
                         )}

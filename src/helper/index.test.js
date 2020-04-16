@@ -24,6 +24,10 @@ describe("helper", () => {
       "status": 1
     };
     const fields = ["name", "description"];
+    const sort = {
+      "name": 1,
+      "description": -1
+    };
     it("should set where, limit and skip", () => {
       expect(helper.buildPaginationQuery()).to.equals(JSON.stringify({
         where: {},
@@ -68,5 +72,24 @@ describe("helper", () => {
         }
       }))
     });
+    it("should correctly set sort option", () => {
+      expect(helper.buildPaginationQuery(page, pageSize, condition, fields, sort)).to.equals(JSON.stringify({
+        where: {
+          status: 1,
+        },
+        options: {
+          limit: 20,
+          skip: 40,
+          projection: {
+            name: true,
+            description: true
+          },
+          sort: {
+            name: 1,
+            description: -1
+          }
+        }
+      }))
+    })
   });
 });

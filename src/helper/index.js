@@ -24,7 +24,8 @@ export const buildPaginationQuery = (
   page = 0,
   pageSize = 10,
   condition = {},
-  fields = []
+  fields = [],
+  sort = []
 ) => {
   const query = {
     where: condition,
@@ -39,6 +40,9 @@ export const buildPaginationQuery = (
       projection[field] = true;
     });
     query.options.projection = projection;
+  }
+  if (sort && sort.length) {
+    query.options.sort = sort;
   }
   return JSON.stringify(query);
 };
