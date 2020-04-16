@@ -46,9 +46,10 @@ const Login = ({ signIn, history, isAuthorized }) => {
     ApiAuthService.login(username, password)
       .then(({ data }) => {
         if (data) {
-          ApiAuthService.getCurrentUser(data).then(({ data }) => {
+          const tokenId = data;
+          ApiAuthService.getCurrentUser(tokenId).then(({ data }) => {
             if (AuthService.isAuthorized(data)) {
-              AuthService.login(data);
+              AuthService.login(tokenId);
               signIn();
               history.push("/admin/dashboard");
             } else {
