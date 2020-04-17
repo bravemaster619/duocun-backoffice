@@ -23,6 +23,8 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
+import EditAttributesIcon from '@material-ui/icons/EditAttributes';
+
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
@@ -32,6 +34,7 @@ import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
 import ProductPage from "views/Products/Products.js";
+import AttributePage from "views/Attributes/Attributes.js";
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -45,6 +48,13 @@ const dashboardRoutes = [
     name: "Products",
     icon: LocalMallIcon,
     component: ProductPage,
+    layout: "/"
+  },
+  {
+    path: "/attributes",
+    name: "Attributes",
+    icon: EditAttributesIcon,
+    component: AttributePage,
     layout: "/"
   },
   {
