@@ -85,13 +85,13 @@ export default function Product({ location }) {
       .then(({ data }) => {
         if (data.success) {
           setAlert({
-            message: t("Product saved successfully"),
+            message: t("Saved successfully"),
             severtiy: "success"
           });
           updateData();
         } else {
           setAlert({
-            message: t("Product save failed"),
+            message: t("Save failed"),
             severity: "error"
           });
         }
@@ -99,7 +99,7 @@ export default function Product({ location }) {
       .catch(e => {
         console.error(e);
         setAlert({
-          message: t("Product save failed"),
+          message: t("Save failed"),
           severity: "error"
         });
       })
