@@ -38,7 +38,6 @@ export default class ApiService {
     if (typeof param === "object") {
       return `${url}?${queryString.stringify(param)}`;
     }
-    console.log("buildUrl return url: ", url);
     return url;
   }
 
