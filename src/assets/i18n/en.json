@@ -9,11 +9,17 @@
     "Product": "Product",
     "Products": "Products",
     "Image": "Image",
-    "No": "#",
     "Product Name": "Product Name",
     "Price": "Price",
     "Cost": "Cost",
     "Featured": "Featured",
     "Actions": "Actions",
-    "Attribute Name": "Attribute Name"
+    "Attribute Name": "Attribute Name",
+    "Save": "Save",
+    "Add New Value": "Add New Value",
+    "Display Name (English)": "Display Name (English)",
+    "Display Name (Chinese)": "Display Name (Chinese)",
+    "Saved successfully": "Saved successfully",
+    "Save failed": "Save failed",
+    "Data not found": "Data not found"
 }

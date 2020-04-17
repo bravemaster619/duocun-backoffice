@@ -5,12 +5,8 @@ import EditAttribute from "views/Attributes/EditAttribute";
 const Attributes = () => {
   return (
     <Switch>
-      <Route exact path="/attributes">
-        <ListAttributes />
-      </Route>
-      <Route exact path="/attributes/:id">
-        <EditAttribute />
-      </Route>
+      <Route exact path="/attributes" component={ListAttributes}></Route>
+      <Route exact path="/attributes/:id" component={EditAttribute}></Route>
     </Switch>
   );
 };

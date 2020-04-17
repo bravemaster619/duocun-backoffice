@@ -14,5 +14,12 @@
     "Cost": "Cost",
     "Featured": "Featured",
     "Actions": "Actions",
-    "Attribute Name": "Attribute Name"
+    "Attribute Name": "Attribute Name",
+    "Save": "保存",
+    "Add New Value": "添加新值",
+    "Display Name (English)": "Display Name (English)",
+    "Display Name (Chinese)": "Display Name (Chinese)",
+    "Saved successfully": "Saved successfully",
+    "Save failed": "Save failed",
+    "Data not found": "Data not found"
 }
