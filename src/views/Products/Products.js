@@ -29,6 +29,7 @@ import TableBodySkeleton from "components/Table/TableBodySkeleton";
 import Searchbar from "components/Searchbar/Searchbar";
 import ApiProductService from "services/api/ApiProductService";
 import { getQueryParam } from "helper/index";
+import FlashStorage from "services/FlashStorage";
 const useStyles = makeStyles(() => ({
   table: {
     minWidth: 750
@@ -51,7 +52,9 @@ export default function Product({ location }) {
   const [sort, setSort] = useState(["_id", 1]);
 
   // states related to processing
-  const [alert, setAlert] = useState({ message: "", severity: "info" });
+  const [alert, setAlert] = useState(
+    FlashStorage.get("PRODUCT_ALERT") || { message: "", severity: "info" }
+  );
   const [processing, setProcessing] = useState(false);
 
   const updateData = () => {
@@ -111,7 +114,7 @@ export default function Product({ location }) {
     if (!rows.length) {
       return (
         <TableRow>
-          <TableCell align="center" colSpan={7}>
+          <TableCell align="center" colSpan={7} size="medium">
             {t("No data to display")}
           </TableCell>
         </TableRow>
