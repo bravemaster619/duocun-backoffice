@@ -21,5 +21,7 @@
     "Display Name (Chinese)": "Display Name (Chinese)",
     "Saved successfully": "Saved successfully",
     "Save failed": "Save failed",
-    "Data not found": "Data not found"
+    "Data not found": "Data not found",
+    "Cannnot load data": "Cannot load data",
+    "Back": "退回"
 }

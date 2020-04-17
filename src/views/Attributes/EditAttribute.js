@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
+import Box from "@material-ui/core/Box";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CustomInput from "components/CustomInput/CustomInput";
@@ -26,16 +27,16 @@ import SaveIcon from "@material-ui/icons/Save";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 import ApiAttributeService from "services/api/ApiAttributeService";
+import FlashStorage from "services/FlashStorage";
 
-const defaultAttributeState = (id = "new") => {
-  return {
-    id,
-    name: "",
-    nameEN: "",
-    values: []
-  };
+const defaultAttributeState = {
+  id: "new",
+  name: "",
+  nameEN: "",
+  values: []
 };
 
 const defaultValueState = {
@@ -76,15 +77,16 @@ const EditRow = ({ row, onSave, onCancel, ...extraProps }) => {
   );
 };
 
-export default function EditAttribute({ match }) {
+export default function EditAttribute({ match, history }) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [editIndex, setEditIndex] = useState(-1);
   const [adding, setAdding] = useState(false);
-  const [model, setModel] = useState(defaultAttributeState(match.params.id));
+  const [model, setModel] = useState(defaultAttributeState);
   const [processing, setProcessing] = useState(false);
-  const [alert, setAlert] = useState({ message: "", severity: "info" });
-
+  const [alert, setAlert] = useState(
+    FlashStorage.get("ATTRIBUTE_ALERT") || { message: "", severity: "info" }
+  );
   const addNewRow = row => {
     if (row.name) {
       const values = [...model.values];
@@ -113,12 +115,25 @@ export default function EditAttribute({ match }) {
     removeAlert();
     setProcessing(true);
     ApiAttributeService.saveAttribute(model)
-      .then(e => {
-        console.log(e);
-        setAlert({
-          message: t("Saved successfully"),
-          severity: "success"
-        });
+      .then(({ data }) => {
+        if (data.success) {
+          const newAlert = {
+            message: t("Saved successfully"),
+            severity: "success"
+          };
+          if (model.id === "new") {
+            FlashStorage.set("ATTRIBUTE_ALERT", newAlert);
+            history.push("../attributes");
+          } else {
+            setAlert(newAlert);
+            setModel({ ...data.data, id: data.data._id });
+          }
+        } else {
+          setAlert({
+            message: t("Save failed"),
+            severity: "error"
+          });
+        }
       })
       .catch(e => {
         console.error(e);
@@ -144,8 +159,15 @@ export default function EditAttribute({ match }) {
     if (match.params.id && match.params.id != "new") {
       ApiAttributeService.getAttribute(match.params.id)
         .then(({ data }) => {
-          setModel(data);
-          setLoading(false);
+          if (data.success) {
+            setModel({ ...data.data, id: data.data._id });
+            setLoading(false);
+          } else {
+            setAlert({
+              message: t("Data not found"),
+              severity: "error"
+            });
+          }
         })
         .catch(e => {
           console.error(e);
@@ -157,8 +179,8 @@ export default function EditAttribute({ match }) {
     } else {
       setLoading(false);
     }
-  // since params.id and t are very unlikely to change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // since params.id and t are very unlikely to change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -227,13 +249,18 @@ export default function EditAttribute({ match }) {
                 direction="row"
                 alignItems="center"
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={loading || processing}
-                  onClick={saveAttribute}
-                >
-                  <SaveIcon /> {t("Save")}
+                <Box mr={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={loading || processing}
+                    onClick={saveAttribute}
+                  >
+                    <SaveIcon /> {t("Save")}
+                  </Button>
+                </Box>
+                <Button variant="outlined" color="primary" href="../attributes">
+                  <FormatListBulletedIcon /> {t("Back")}
                 </Button>
               </GridItem>
               <GridItem
@@ -347,5 +374,6 @@ EditAttribute.propTypes = {
     params: PropTypes.shape({
       id: PropTypes.string
     })
-  })
+  }),
+  history: PropTypes.object
 };
