@@ -237,7 +237,7 @@ export default function Product({ location }) {
                             }}
                             style={{ cursor: "pointer" }}
                           >
-                            {t("Name")}
+                            {t("Product Name")}
                             {renderSort("name")}
                           </TableCell>
                           <TableCell
