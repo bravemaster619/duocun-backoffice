@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import ListAttributes from "views/Attributes/ListAttributes";
 import EditAttribute from "views/Attributes/EditAttribute";
 const Attributes = () => {
