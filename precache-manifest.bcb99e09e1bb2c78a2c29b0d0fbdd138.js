@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "67136d3d2bc9252707ad842a2daa6e86",
+    "revision": "ebd52f0ce8bb8ddfc2400754e48ecf1c",
     "url": "/duocun-backoffice/index.html"
   },
   {
-    "revision": "b95b7f7bb22b1f67015a",
+    "revision": "9b96e7003d851edb2e70",
     "url": "/duocun-backoffice/static/css/2.d0176e96.chunk.css"
   },
   {
-    "revision": "198485c7f0912c020272",
-    "url": "/duocun-backoffice/static/css/main.1a5f11bd.chunk.css"
+    "revision": "f6bf51d68b7f646534a6",
+    "url": "/duocun-backoffice/static/css/main.dff3c016.chunk.css"
   },
   {
-    "revision": "b95b7f7bb22b1f67015a",
-    "url": "/duocun-backoffice/static/js/2.94c2a6de.chunk.js"
+    "revision": "9b96e7003d851edb2e70",
+    "url": "/duocun-backoffice/static/js/2.1ad09612.chunk.js"
   },
   {
-    "revision": "198485c7f0912c020272",
-    "url": "/duocun-backoffice/static/js/main.b7cc5c6c.chunk.js"
+    "revision": "f6bf51d68b7f646534a6",
+    "url": "/duocun-backoffice/static/js/main.d0b21ba6.chunk.js"
   },
   {
     "revision": "633108f645c6ad6c337f",

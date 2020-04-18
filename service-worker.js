@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/duocun-backoffice/precache-manifest.252297d8ee96ef16ae2a1b77b44b510c.js"
+  "/duocun-backoffice/precache-manifest.bcb99e09e1bb2c78a2c29b0d0fbdd138.js"
 );
 
 self.addEventListener('message', (event) => {
