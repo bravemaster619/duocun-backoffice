@@ -24,6 +24,7 @@ import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import EditAttributesIcon from '@material-ui/icons/EditAttributes';
+import CategoryIcon from '@material-ui/icons/Category';
 
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
@@ -33,14 +34,23 @@ import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
+import CategoriesPage from "views/Categories/Categories.js";
 import ProductPage from "views/Products/Products.js";
 import AttributePage from "views/Attributes/Attributes.js";
+
 const dashboardRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: Dashboard,
     component: DashboardPage,
+    layout: "/"
+  },
+  {
+    path: "/categories",
+    name: "Categories",
+    icon: CategoryIcon,
+    component: CategoriesPage,
     layout: "/"
   },
   {
