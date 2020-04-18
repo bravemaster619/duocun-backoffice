@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   }
 });
 
-const DEFAULT_STRUCTURE_DATA = [
+export const DEFAULT_STRUCTURE_DATA = [
   {
     categoryId: "1",
     name: "Home",

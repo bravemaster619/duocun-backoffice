@@ -19,6 +19,9 @@ export default {
     }
     return ApiService.v2().get("admin/categories", query);
   },
+  getCategoryTree: () => {
+    return ApiService.v2().get("admin/categories/category-tree");
+  },
   saveCategory: model => {
     if (!model.id) {
       model._id ? (model.id = model._id) : (model.id = "new");

@@ -15,6 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Button from "@material-ui/core/Button";
 import { TextField } from "@material-ui/core";
+import FormLabel from "@material-ui/core/FormLabel";
 import CustomInput from "components/CustomInput/CustomInput";
 
 import SaveIcon from "@material-ui/icons/Save";
@@ -22,6 +23,7 @@ import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
 import FlashStorage from "services/FlashStorage";
 import ApiCategoryService from "services/api/ApiCategoryService";
+import CategoryTree from "./CategoryTree";
 
 const useStyles = makeStyles(() => ({
   textarea: {
@@ -34,8 +36,11 @@ const defaultModelState = {
   name: "",
   nameEN: "",
   description: "",
-  descriptionEN: ""
+  descriptionEN: "",
+  parentId: "0"
 };
+
+const defaultTreeState = [];
 
 const EditCategorySkeleton = () => (
   <React.Fragment>
@@ -62,6 +67,7 @@ const EditCategory = ({ match, history }) => {
   const classes = useStyles();
   // states related to model
   const [model, setModel] = useState(defaultModelState);
+  const [categoryTreeData, setCategoryTreeData] = useState(defaultTreeState);
   const [loading, setLoading] = useState(false);
   // states related to processing
   const [alert, setAlert] = useState(
@@ -91,7 +97,7 @@ const EditCategory = ({ match, history }) => {
             history.push("../categories");
           } else {
             setAlert(newAlert);
-            setModel({ ...data.data, id: data.data._id });
+            updateData();
           }
         } else {
           setAlert({
@@ -117,6 +123,7 @@ const EditCategory = ({ match, history }) => {
       .then(({ data }) => {
         if (data.success) {
           setModel(data.data);
+          setCategoryTreeData(data.meta.tree);
         } else {
           setAlert({
             message: t("Data not found"),
@@ -137,10 +144,31 @@ const EditCategory = ({ match, history }) => {
   };
 
   useEffect(() => {
-    /* eslint eqeqeq: 0 */
-    if (match.params.id && match.params.id != "new") {
-      setLoading(true);
+    setLoading(true);
+    if (match.params.id && match.params.id !== "new") {
       updateData();
+    } else if (match.params.id === "new") {
+      ApiCategoryService.getCategoryTree()
+        .then(({ data }) => {
+          if (data.success) {
+            setCategoryTreeData(data.data);
+          } else {
+            setAlert({
+              message: t("Data not found"),
+              severity: "error"
+            });
+          }
+        })
+        .catch(e => {
+          console.error(e);
+          setAlert({
+            message: t("Data not found"),
+            severity: "error"
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -234,6 +262,25 @@ const EditCategory = ({ match, history }) => {
                       />
                     </Box>
                   </GridItem>
+                  <GridItem xs={12} container direction="row" justify="center">
+                    <GridItem xs={12} lg={8}>
+                      <Box p={4}>
+                        <FormLabel component="legend">
+                          {t("Parent Category")}
+                        </FormLabel>
+                        <CategoryTree
+                          treeData={categoryTreeData}
+                          selectedCategoryId={model.parentId}
+                          checkDisable={({ categoryId }) =>
+                            categoryId === model._id
+                          }
+                          onSelect={val =>
+                            setModel({ ...model, parentId: val })
+                          }
+                        />
+                      </Box>
+                    </GridItem>
+                  </GridItem>
                 </React.Fragment>
               )}
               <GridItem xs={12} container direction="row-reverse">
@@ -247,7 +294,7 @@ const EditCategory = ({ match, history }) => {
                   <Button
                     color="primary"
                     variant="contained"
-                    disabled={loading || processing}
+                    disabled={loading || processing || !model.name}
                     onClick={saveModel}
                   >
                     <SaveIcon />
