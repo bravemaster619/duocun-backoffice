@@ -38,6 +38,7 @@
     "Categories": "分类",
     "Category Name (English)": "分类名称 (英文)",
     "Category Name (Chinese)": "分类名称 (中文)",
-    "Display Order": "位置"
-
+    "Display Order": "位置",
+    "Add Category": "添加新类别",
+    "All products under selected category will be deleted!": "所选类别下的所有产品将被删除！"
 }
