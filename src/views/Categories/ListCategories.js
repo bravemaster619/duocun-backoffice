@@ -58,7 +58,7 @@ export default function ListCategories({ location }) {
   const parentId = getQueryParam(location, "parentId")
     ? parseInt(getQueryParam(location, "parentId"))
     : undefined;
-  const [parents, setParents] = useState([]);
+  const [parents] = useState([]);
   // states related to processing
   const [alert, setAlert] = useState(
     FlashStorage.get("CATEGORY_ALERT") || { message: "", severity: "info" }
@@ -67,7 +67,7 @@ export default function ListCategories({ location }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [removeId, setRemoveId] = useState(null);
 
-  const structurePanelRef = useRef();
+  // const structurePanelRef = useRef();
 
   const removeAlert = () => {
     setAlert({
