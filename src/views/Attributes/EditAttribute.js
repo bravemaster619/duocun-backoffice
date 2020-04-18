@@ -188,7 +188,11 @@ export default function EditAttribute({ match, history }) {
       <GridItem xs={12}>
         <Card>
           <CardHeader color="primary">
-            <h4>{t("Edit Attribute")}</h4>
+            <h4>
+              {model.id && model.id !== "new"
+                ? t("Edit Attribute") + ": " + model.name
+                : t("Add Attribute")}
+            </h4>
           </CardHeader>
           <CardBody>
             <GridContainer>

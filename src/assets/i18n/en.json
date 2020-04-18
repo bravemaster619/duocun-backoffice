@@ -15,6 +15,8 @@
     "Featured": "Featured",
     "Actions": "Actions",
     "Attributes": "Attributes",
+    "Add Attribute": "Add Attribute",
+    "Edit Attribute": "Edit Attribute",
     "Attribute Name (English)": "Attribute Name (English)",
     "Attribute Name (Chinese)": "Attribute Name (Chinese)",
     "Save": "Save",
@@ -36,6 +38,5 @@
     "Categories": "Categories",
     "Category Name (English)": "Category Name (English)",
     "Category Name (Chinese)": "Category Name (Chinese)",
-    "Display Order": "Display Order",
-    "Add Attribute": "Add Attribute"
+    "Display Order": "Display Order"
 }
