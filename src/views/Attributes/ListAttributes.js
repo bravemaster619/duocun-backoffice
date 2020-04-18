@@ -5,19 +5,22 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
+
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+
+import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "components/Table/TablePagniation.js";
-import TableRow from "@material-ui/core/TableRow";
 import TableBodySkeleton from "components/Table/TableBodySkeleton";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
+
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Alert from "@material-ui/lab/Alert";
@@ -27,6 +30,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import ConfirmDialog from "components/ConfirmDialog/ConfirmDialog";
+
 import { getQueryParam } from "helper/index";
 import ApiAttributeService from "services/api/ApiAttributeService";
 import FlashStorage from "services/FlashStorage";
@@ -140,6 +144,7 @@ const Attributes = ({ location }) => {
         });
       })
       .finally(() => {
+        setRemoveId(null);
         setProcessing(false);
       });
   };
@@ -206,7 +211,7 @@ const Attributes = ({ location }) => {
                           {renderSort("name")}
                         </TableCell>
                         <TableCell
-                           onClick={() => {
+                          onClick={() => {
                             toggleSort("nameEN");
                           }}
                           style={{ cursor: "pointer" }}
@@ -218,7 +223,12 @@ const Attributes = ({ location }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {loading && <TableBodySkeleton colCount={4} />}
+                      {loading && (
+                        <TableBodySkeleton
+                          colCount={4}
+                          rowCount={rowsPerPage}
+                        />
+                      )}
                       {!loading &&
                         (attributes.length > 0 ? (
                           attributes.map((attribute, index) => (

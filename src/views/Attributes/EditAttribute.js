@@ -4,13 +4,12 @@ import { useTranslation } from "react-i18next";
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import Card from "components/Card/Card.js";
 import Box from "@material-ui/core/Box";
+
+import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import CustomInput from "components/CustomInput/CustomInput";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -18,16 +17,20 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBodySkeleton from "components/Table/TableBodySkeleton";
+
 import TextField from "@material-ui/core/TextField";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Alert from "@material-ui/lab/Alert";
+import CustomInput from "components/CustomInput/CustomInput";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import SaveIcon from "@material-ui/icons/Save";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
 import ApiAttributeService from "services/api/ApiAttributeService";
 import FlashStorage from "services/FlashStorage";
