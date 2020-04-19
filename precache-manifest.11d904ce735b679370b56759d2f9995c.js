@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "bd3d7caee175adea6fda13cc61b0e2a0",
+    "revision": "658813d19a2fb38fa05f095b3942ad8f",
     "url": "/duocun-backoffice/index.html"
   },
   {
-    "revision": "50344ff542dca7dedfce",
+    "revision": "305eca1659fd93270979",
     "url": "/duocun-backoffice/static/css/2.d0176e96.chunk.css"
   },
   {
-    "revision": "85748d5db86fabe01916",
+    "revision": "9f4ab01c8d2a91a29c67",
     "url": "/duocun-backoffice/static/css/main.dff3c016.chunk.css"
   },
   {
-    "revision": "50344ff542dca7dedfce",
-    "url": "/duocun-backoffice/static/js/2.3621cf80.chunk.js"
+    "revision": "305eca1659fd93270979",
+    "url": "/duocun-backoffice/static/js/2.d9590223.chunk.js"
   },
   {
-    "revision": "85748d5db86fabe01916",
-    "url": "/duocun-backoffice/static/js/main.7926b2f6.chunk.js"
+    "revision": "9f4ab01c8d2a91a29c67",
+    "url": "/duocun-backoffice/static/js/main.d00e0d87.chunk.js"
   },
   {
     "revision": "633108f645c6ad6c337f",
