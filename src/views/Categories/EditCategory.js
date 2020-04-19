@@ -178,11 +178,14 @@ const EditCategory = ({ match, history }) => {
       <GridItem xs={12}>
         <Card>
           <CardHeader color="primary">
-            <h4>
-              {model._id && model._id !== "new"
-                ? t("Edit Category") + ": " + model.name
-                : t("Add Category")}
-            </h4>
+            {loading && <h4>{t("Category")}</h4>}
+            {!loading && (
+              <h4>
+                {model._id && model._id !== "new"
+                  ? t("Edit Category") + ": " + model.name
+                  : t("Add Category")}
+              </h4>
+            )}
           </CardHeader>
           <CardBody>
             <GridContainer>
