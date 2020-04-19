@@ -46,3 +46,25 @@ export const buildPaginationQuery = (
   }
   return JSON.stringify(query);
 };
+
+export const treefyAttributeData = flatData => {
+  const treeData = [];
+  flatData.forEach(data => {
+    const dataInTree = treeData.find(
+      treeData => treeData.attrIdx === data.attrIdx
+    );
+    if (dataInTree) {
+      if (dataInTree.valIndices) {
+        dataInTree.valIndices.push(data.valIdx);
+      } else {
+        dataInTree.valIndices = [data.valIdx];
+      }
+    } else {
+      treeData.push({
+        attrIdx: data.attrIdx,
+        valIndices: [data.valIdx]
+      });
+    }
+  });
+  return treeData;
+};

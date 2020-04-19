@@ -5,10 +5,12 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
+
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -17,19 +19,25 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "components/Table/TablePagniation.js";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
+
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import LocalMallIcon from "@material-ui/icons/LocalMall";
+
 import Avatar from "@material-ui/core/Avatar";
 import Alert from "@material-ui/lab/Alert";
-import LocalMallIcon from "@material-ui/icons/LocalMall";
 import TableBodySkeleton from "components/Table/TableBodySkeleton";
 import Searchbar from "components/Searchbar/Searchbar";
+
 import ApiProductService from "services/api/ApiProductService";
 import { getQueryParam } from "helper/index";
 import FlashStorage from "services/FlashStorage";
+import { Button, Box } from "@material-ui/core";
+
 const useStyles = makeStyles(() => ({
   table: {
     minWidth: 750
@@ -121,7 +129,7 @@ export default function Product({ location }) {
       );
     }
     return (
-      <>
+      <React.Fragment>
         {rows.map((row, idx) => (
           <TableRow key={idx}>
             <TableCell>{page * rowsPerPage + idx + 1}</TableCell>
@@ -163,7 +171,7 @@ export default function Product({ location }) {
             </TableCell>
           </TableRow>
         ))}
-      </>
+      </React.Fragment>
     );
   };
   const renderSort = fieldName => {
@@ -194,6 +202,16 @@ export default function Product({ location }) {
                   <h4>{t("Products")}</h4>
                 </GridItem>
                 <GridItem xs={12} lg={6} align="right">
+                  <Box mr={2} style={{ display: "inline-block" }}>
+                    <Button
+                      href="products/new"
+                      variant="contained"
+                      color="default"
+                    >
+                      <AddCircleOutlineIcon />
+                      {t("New Product")}
+                    </Button>
+                  </Box>
                   <Searchbar
                     onChange={e => {
                       const { target } = e;

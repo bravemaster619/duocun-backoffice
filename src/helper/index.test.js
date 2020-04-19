@@ -86,4 +86,34 @@ describe("helper", () => {
       }))
     })
   });
+  describe("treefyAttributeData", () => {
+    it("should treefy given flat attribute data", () => {
+      const flatData = [{
+        attrIdx: 2,
+        valIdx: 3
+      }, {
+        attrIdx: 2,
+        valIdx: 4
+      }, {
+        attrIdx: 3,
+        valIdx: 2
+      }, {
+        attrIdx: 1,
+        valIdx:1
+      }, {
+        attrIdx: 3,
+        valIdx: 4
+      }];
+      expect(helper.treefyAttributeData(flatData)).to.eqls([{
+        attrIdx: 2,
+        valIndices: [3,4]
+      }, {
+        attrIdx: 3,
+        valIndices: [2,4]
+      }, {
+        attrIdx: 1,
+        valIndices: [1]
+      }]);
+    });
+  });
 });

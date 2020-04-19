@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,14 +18,19 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+
 import Skeleton from "@material-ui/lab/Skeleton";
 import Alert from "@material-ui/lab/Alert";
 import CustomInput from "components/CustomInput/CustomInput";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -36,7 +41,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
 
 import FlashStorage from "services/FlashStorage";
-
+import ApiProductService from "services/api/ApiProductService";
+import CategoryTree from "views/Categories/CategoryTree";
+import { treefyAttributeData } from "helper/index";
 const useStyles = makeStyles(() => ({
   textarea: {
     width: "100%"
@@ -55,10 +62,23 @@ const useStyles = makeStyles(() => ({
   },
   editingCell: {
     padding: "0 5px"
+  },
+  formControl: {
+    display: "block"
+  },
+  formControlLabel: {
+    marginTop: "1rem",
+    marginBottom: "1rem",
+    fontWeight: 600
+  },
+  formGroup: {
+    border: "1px solid #eee",
+    borderRadius: 5,
+    padding: 5
   }
 }));
 
-const defaultModelState = {
+const defaultProductModelState = {
   _id: "new",
   name: "",
   nameEN: "",
@@ -66,56 +86,25 @@ const defaultModelState = {
   descriptionEN: "",
   price: 0,
   cost: 0,
+  categoryId: "",
   stock: {
-    enabled: true,
-    quantity: 300,
+    enabled: false,
+    quantity: 0,
     outofstockMessage: "",
     outofstockMessageEN: ""
   },
-  attributes: [
-    {
-      name: "尺寸",
-      nameEN: "Size",
-      values: [
-        {
-          name: "M",
-          nameEN: "M",
-          price: 10,
-          cost: 9,
-          quantity: 200
-        },
-        {
-          name: "L",
-          nameEN: "L",
-          price: 11,
-          cost: 10,
-          quantity: 170
-        }
-      ]
-    },
-    {
-      name: "颜色",
-      nameEN: "Color",
-      values: [
-        {
-          name: "红色",
-          nameEN: "Red",
-          price: 10,
-          cost: 10,
-          quantity: 100
-        }
-      ]
-    }
-  ]
+  attributes: []
 };
 
-const defaultAttributeModelState = {
+const defaultAttributeValueModelState = {
   attrIdx: -1,
   valIdx: -1,
   price: 0,
   cost: 0,
   quantity: 0
 };
+
+const defaultAttributesState = [];
 
 const EditProductSkeleton = () => (
   <React.Fragment>
@@ -146,8 +135,8 @@ const EditProductSkeleton = () => (
   </React.Fragment>
 );
 
-const EditAttributeRow = ({ row, onSave, onCancel, ...extraProps }) => {
-  const [model, setModel] = useState(row || defaultAttributeModelState);
+const EditAttributeValueRow = ({ row, onSave, onCancel, ...extraProps }) => {
+  const [model, setModel] = useState(row || defaultAttributeValueModelState);
   const classes = useStyles();
   return (
     <TableRow {...extraProps}>
@@ -222,14 +211,14 @@ const AttributeTable = ({ attributes, processing, onSave, onDelete }) => {
             attributes.map((attribute, attrIdx) =>
               attribute.values.map((value, valIdx) =>
                 editRow.attrIdx === attrIdx && editRow.valIdx === valIdx ? (
-                  <EditAttributeRow
+                  <EditAttributeValueRow
                     key={attrIdx + "_" + valIdx}
                     row={{
                       attrName: attribute.name,
                       valName: value.name,
-                      price: value.price,
-                      cost: value.cost,
-                      quantity: value.quantity
+                      price: parseFloat(value.price),
+                      cost: parseFloat(value.cost),
+                      quantity: parseInt(value.quantity)
                     }}
                     onSave={model => {
                       onSave(attrIdx, valIdx, model);
@@ -267,13 +256,82 @@ const AttributeTable = ({ attributes, processing, onSave, onDelete }) => {
   );
 };
 
-const EditProduct = () => {
+const AttributeGenerator = ({ attributes, onGenerate }) => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+  const [model, setModel] = useState([]);
+  const getChecked = (attrIdx, valIdx) => {
+    for (let i = 0; i < model.length; i++) {
+      if (model[i].attrIdx === attrIdx && model[i].valIdx === valIdx) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const handleChange = (attrIdx, valIdx) => {
+    const newModel = [...model];
+    const modelIndex = newModel.findIndex(
+      m => m.attrIdx === attrIdx && m.valIdx === valIdx
+    );
+    if (modelIndex > -1) {
+      newModel.splice(modelIndex, 1);
+    } else {
+      newModel.push({ attrIdx, valIdx });
+    }
+    setModel(newModel);
+  };
+
+  return (
+    <div>
+      {attributes.map((attribute, attrIdx) => (
+        <FormControl
+          component="div"
+          key={attrIdx}
+          className={classes.formControl}
+        >
+          <FormLabel component="legend" className={classes.formControlLabel}>
+            {attribute.name}
+          </FormLabel>
+          <FormGroup className={classes.formGroup}>
+            {attribute.values.map((value, valIdx) => (
+              <FormControlLabel
+                key={attrIdx + "_" + valIdx}
+                control={
+                  <Checkbox
+                    checked={getChecked(attrIdx, valIdx)}
+                    onChange={() => handleChange(attrIdx, valIdx)}
+                  />
+                }
+                label={value.name}
+              />
+            ))}
+          </FormGroup>
+        </FormControl>
+      ))}
+      <Box p={2} align="center">
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={!model.length}
+          onClick={() => {
+            onGenerate(treefyAttributeData(model));
+          }}
+        >
+          {t("Generate")}
+        </Button>
+      </Box>
+    </div>
+  );
+};
+
+const EditProduct = ({ match, history }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [model, setModel] = useState(defaultModelState);
-
+  const [model, setModel] = useState(defaultProductModelState);
+  const [categoryTreeData, setCategoryTreeData] = useState([]);
+  const [attributes, setAttributes] = useState(defaultAttributesState);
   const [alert, setAlert] = useState(
     FlashStorage.get("PRODUCT_ALERT") || { message: "", severity: "info" }
   );
@@ -285,9 +343,77 @@ const EditProduct = () => {
     });
   };
 
+  const updatePage = () => {
+    ApiProductService.getProduct(match.params.id)
+      .then(({ data }) => {
+        if (data.success) {
+          setModel({ ...model, ...data.data });
+          setCategoryTreeData(data.meta.categoryTree);
+          setAttributes(data.meta.attributes);
+        } else {
+          setAlert({
+            message: t("Data not found"),
+            severity: "error"
+          });
+        }
+      })
+      .catch(e => {
+        console.error(e);
+        setAlert({
+          message: t("Data not found"),
+          severity: "error"
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const saveModel = () => {
+    removeAlert();
+    setProcessing(true);
+    ApiProductService.saveProduct(model)
+      .then(({ data }) => {
+        if (data.success) {
+          const newAlert = {
+            message: t("Saved successfully"),
+            severity: "success"
+          };
+          if (model._id === "new") {
+            FlashStorage.set("PRODUCT_ALERT", newAlert);
+            history.push("../products");
+            return;
+          } else {
+            setAlert(newAlert);
+            updatePage();
+          }
+        } else {
+          setAlert({
+            message: t("Save failed"),
+            severity: "error"
+          });
+        }
+        setProcessing(false);
+      })
+      .catch(e => {
+        console.error(e);
+        setAlert({
+          message: t("Save failed"),
+          severity: "error"
+        });
+        setProcessing(false);
+      });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    updatePage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <GridContainer>
-      <GridItem xs={12}>
+      <GridItem xs={12} lg={8}>
         <Card>
           <CardHeader color="primary">
             {loading && <h4>{t("Product")}</h4>}
@@ -311,7 +437,7 @@ const EditProduct = () => {
               {loading && <EditProductSkeleton />}
               {!loading && (
                 <React.Fragment>
-                  <GridItem xs={12} lg={7}>
+                  <GridItem xs={12}>
                     <GridContainer>
                       <GridItem xs={12}>
                         <h5 className={classes.heading}>
@@ -458,9 +584,11 @@ const EditProduct = () => {
                               fullWidth: true
                             }}
                             inputProps={{
-                              value: model.cost,
+                              value: model.stock.quantity,
                               onChange: e => {
-                                setModel({ ...model, cost: e.target.value });
+                                const newModel = { ...model };
+                                newModel.stock.quantity = e.target.value;
+                                setModel(newModel);
                               }
                             }}
                           />
@@ -505,17 +633,18 @@ const EditProduct = () => {
                       </GridItem>
                     </GridContainer>
                   </GridItem>
-                  <GridItem xs={12} lg={5}>
-                    <GridContainer>
-                      <GridItem xs={12}>
-                        <h5 className={classes.heading}>{t("Category")}</h5>
-                      </GridItem>
-                    </GridContainer>
-                  </GridItem>
                 </React.Fragment>
               )}
+            </GridContainer>
+          </CardBody>
+        </Card>
+        <Card>
+          <CardHeader>
+            <h5 className={classes.heading}>{t("Combinations")}</h5>
+          </CardHeader>
+          <CardBody>
+            <GridContainer>
               <GridItem xs={12}>
-                <h5 className={classes.heading}>{t("Combinations")}</h5>
                 <GridContainer>
                   <GridItem xs={12} lg={7}>
                     <AttributeTable
@@ -542,22 +671,72 @@ const EditProduct = () => {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} lg={5}></GridItem>
+                  <GridItem xs={12} lg={5}>
+                    <AttributeGenerator
+                      attributes={attributes}
+                      onGenerate={treeData => {
+                        const newModel = { ...model };
+                        newModel.attributes = [];
+                        treeData.forEach(({ attrIdx, valIndices }) => {
+                          const attribute = {
+                            name: attributes[attrIdx].name,
+                            nameEN: attributes[attrIdx].nameEN,
+                            values: []
+                          };
+                          valIndices.forEach(valIdx => {
+                            const { name, nameEN } = attributes[attrIdx].values[
+                              valIdx
+                            ];
+                            const { price, cost } = newModel;
+                            attribute.values.push({
+                              name: name || "",
+                              nameEN: nameEN || "",
+                              price: price || 0,
+                              cost: cost || 0,
+                              quantity: newModel.stock.quantity || 0
+                            });
+                          });
+                          newModel.attributes.push(attribute);
+                        });
+                        setModel(newModel);
+                      }}
+                    />
+                  </GridItem>
                 </GridContainer>
               </GridItem>
+            </GridContainer>
+          </CardBody>
+        </Card>
+      </GridItem>
+      <GridItem xs={12} lg={4}>
+        <Card>
+          <CardHeader>
+            <h5 className={classes.heading}>{t("Category")}</h5>
+          </CardHeader>
+          <CardBody>
+            <GridContainer>
+              <GridItem xs={12}>
+                {!loading && (
+                  <CategoryTree
+                    treeData={categoryTreeData}
+                    selectedCategoryId={model.categoryId}
+                    onSelect={categoryId => setModel({ ...model, categoryId })}
+                  />
+                )}
+              </GridItem>
               <GridItem xs={12} container direction="row-reverse">
-                <Box>
+                <Box mt={2}>
                   <Button variant="contained" href="../products">
                     <FormatListBulletedIcon />
                     {t("Back")}
                   </Button>
                 </Box>
-                <Box mr={2}>
+                <Box mt={2} mr={2}>
                   <Button
                     color="primary"
                     variant="contained"
                     disabled={loading || processing || !model.name}
-                    // onClick={saveModel}
+                    onClick={saveModel}
                   >
                     <SaveIcon />
                     {t("Save")}
@@ -572,7 +751,7 @@ const EditProduct = () => {
   );
 };
 
-EditAttributeRow.propTypes = {
+EditAttributeValueRow.propTypes = {
   row: PropTypes.shape({
     attrName: PropTypes.string,
     valName: PropTypes.string,
@@ -589,6 +768,20 @@ AttributeTable.propTypes = {
   processing: PropTypes.bool,
   onDelete: PropTypes.func,
   onSave: PropTypes.func
+};
+
+AttributeGenerator.propTypes = {
+  attributes: PropTypes.array,
+  onGenerate: PropTypes.func
+};
+
+EditProduct.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string
+    })
+  }),
+  history: PropTypes.object
 };
 
 export default EditProduct;

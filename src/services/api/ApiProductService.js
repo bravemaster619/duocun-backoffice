@@ -19,5 +19,12 @@ export default {
     return ApiService.v2().post("admin/products/toggle-feature", {
       productId
     });
+  },
+  getProduct: id => {
+    return ApiService.v2().get(`admin/products/${id}`);
+  },
+  saveProduct: model => {
+    model._id = model._id || "new";
+    return ApiService.v2().post(`admin/products/${model._id}`, model);
   }
 };
