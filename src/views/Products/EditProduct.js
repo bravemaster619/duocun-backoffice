@@ -43,7 +43,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import FlashStorage from "services/FlashStorage";
 import ApiProductService from "services/api/ApiProductService";
 import CategoryTree from "views/Categories/CategoryTree";
-import { treefyAttributeData } from "helper/index";
+import { groupAttributeData, getAllCombinations } from "helper/index";
 const useStyles = makeStyles(() => ({
   textarea: {
     width: "100%"
@@ -93,7 +93,8 @@ const defaultProductModelState = {
     outofstockMessage: "",
     outofstockMessageEN: ""
   },
-  attributes: []
+  attributes: [],
+  combinations: []
 };
 
 const defaultAttributeValueModelState = {
@@ -105,6 +106,17 @@ const defaultAttributeValueModelState = {
 };
 
 const defaultAttributesState = [];
+
+const getCombinationDescription = (attributes, { values }) => {
+  let descriptions = [];
+  values.forEach(({ attrIdx, valIdx }) => {
+    const attribute = attributes.find(({ _id }) => _id === attrIdx);
+    if (attribute) {
+      descriptions.push(`${attribute.name}: ${attribute.values[valIdx].name}`);
+    }
+  });
+  return descriptions.join(", ");
+};
 
 const EditProductSkeleton = () => (
   <React.Fragment>
@@ -135,12 +147,12 @@ const EditProductSkeleton = () => (
   </React.Fragment>
 );
 
-const EditAttributeValueRow = ({ row, onSave, onCancel, ...extraProps }) => {
+const EditCombinationRow = ({ row, onSave, onCancel, ...extraProps }) => {
   const [model, setModel] = useState(row || defaultAttributeValueModelState);
   const classes = useStyles();
   return (
     <TableRow {...extraProps}>
-      <TableCell>{model.attrName + " : " + model.valName}</TableCell>
+      <TableCell>{row.combinationDescription}</TableCell>
       <TableCell className={classes.editingCell}>
         <TextField
           inputProps={{
@@ -180,12 +192,15 @@ const EditAttributeValueRow = ({ row, onSave, onCancel, ...extraProps }) => {
   );
 };
 
-const AttributeTable = ({ attributes, processing, onSave, onDelete }) => {
+const CombinationTable = ({
+  combinations,
+  processing,
+  attributes,
+  onSave,
+  onDelete
+}) => {
   const { t } = useTranslation();
-  const [editRow, setEditRow] = useState({
-    attrIdx: -1,
-    valIdx: -1
-  });
+  const [editRowIdx, setEditRowIdx] = useState(-1);
   return (
     <TableContainer>
       <Table size="small">
@@ -199,55 +214,57 @@ const AttributeTable = ({ attributes, processing, onSave, onDelete }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {(!attributes || !attributes.length) && (
+          {(!combinations || !combinations.length) && (
             <TableRow>
               <TableCell align="center" colSpan={5}>
                 {t("No data to display")}
               </TableCell>
             </TableRow>
           )}
-          {attributes &&
-            attributes.length > 0 &&
-            attributes.map((attribute, attrIdx) =>
-              attribute.values.map((value, valIdx) =>
-                editRow.attrIdx === attrIdx && editRow.valIdx === valIdx ? (
-                  <EditAttributeValueRow
-                    key={attrIdx + "_" + valIdx}
-                    row={{
-                      attrName: attribute.name,
-                      valName: value.name,
-                      price: parseFloat(value.price),
-                      cost: parseFloat(value.cost),
-                      quantity: parseInt(value.quantity)
-                    }}
-                    onSave={model => {
-                      onSave(attrIdx, valIdx, model);
-                      setEditRow({ attrIdx: -1, valIdx: -1 });
-                    }}
-                    onCancel={() => setEditRow({ attrIdx: -1, valIdx: -1 })}
-                  />
-                ) : (
-                  <TableRow key={attrIdx + "_" + valIdx}>
-                    <TableCell>{attribute.name + " : " + value.name}</TableCell>
-                    <TableCell>{value.price}</TableCell>
-                    <TableCell>{value.cost}</TableCell>
-                    <TableCell>{value.quantity}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        disabled={processing}
-                        onClick={() => setEditRow({ attrIdx, valIdx })}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        disabled={processing}
-                        onClick={() => onDelete(attrIdx, valIdx)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                )
+          {combinations &&
+            combinations.length > 0 &&
+            combinations.map((combination, index) =>
+              index === editRowIdx ? (
+                <EditCombinationRow
+                  key={index}
+                  row={{
+                    combinationDescription: getCombinationDescription(
+                      attributes,
+                      combination
+                    ),
+                    price: parseFloat(combination.price),
+                    cost: parseFloat(combination.cost),
+                    quantity: parseInt(combination.quantity)
+                  }}
+                  onSave={model => {
+                    onSave(index, model);
+                    setEditRowIdx(-1);
+                  }}
+                  onCancel={() => setEditRowIdx(-1)}
+                />
+              ) : (
+                <TableRow key={index}>
+                  <TableCell>
+                    {getCombinationDescription(attributes, combination)}
+                  </TableCell>
+                  <TableCell>{combination.price}</TableCell>
+                  <TableCell>{combination.cost}</TableCell>
+                  <TableCell>{combination.quantity}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      disabled={processing}
+                      onClick={() => setEditRowIdx(index)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      disabled={processing}
+                      onClick={() => onDelete(index)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
               )
             )}
         </TableBody>
@@ -256,7 +273,7 @@ const AttributeTable = ({ attributes, processing, onSave, onDelete }) => {
   );
 };
 
-const AttributeGenerator = ({ attributes, onGenerate }) => {
+const CombinationGenerator = ({ attributes, onGenerate }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [model, setModel] = useState([]);
@@ -283,10 +300,10 @@ const AttributeGenerator = ({ attributes, onGenerate }) => {
 
   return (
     <div>
-      {attributes.map((attribute, attrIdx) => (
+      {attributes.map(attribute => (
         <FormControl
           component="div"
-          key={attrIdx}
+          key={attribute._id}
           className={classes.formControl}
         >
           <FormLabel component="legend" className={classes.formControlLabel}>
@@ -295,11 +312,11 @@ const AttributeGenerator = ({ attributes, onGenerate }) => {
           <FormGroup className={classes.formGroup}>
             {attribute.values.map((value, valIdx) => (
               <FormControlLabel
-                key={attrIdx + "_" + valIdx}
+                key={attribute._id + "_" + valIdx}
                 control={
                   <Checkbox
-                    checked={getChecked(attrIdx, valIdx)}
-                    onChange={() => handleChange(attrIdx, valIdx)}
+                    checked={getChecked(attribute._id, valIdx)}
+                    onChange={() => handleChange(attribute._id, valIdx)}
                   />
                 }
                 label={value.name}
@@ -314,7 +331,7 @@ const AttributeGenerator = ({ attributes, onGenerate }) => {
           color="secondary"
           disabled={!model.length}
           onClick={() => {
-            onGenerate(treefyAttributeData(model));
+            onGenerate(groupAttributeData(model));
           }}
         >
           {t("Generate")}
@@ -647,56 +664,42 @@ const EditProduct = ({ match, history }) => {
               <GridItem xs={12}>
                 <GridContainer>
                   <GridItem xs={12} lg={7}>
-                    <AttributeTable
+                    <CombinationTable
                       processing={processing}
-                      attributes={model.attributes}
-                      onSave={(attrIdx, valIdx, value) => {
+                      attributes={attributes}
+                      combinations={model.combinations}
+                      onSave={(index, value) => {
                         const newModel = { ...model };
-                        newModel.attributes[attrIdx].values[valIdx] = {
-                          ...newModel.attributes[attrIdx].values[valIdx],
-                          price: value.price,
-                          cost: value.cost,
-                          quantity: value.quantity
-                        };
+                        newModel.combinations[index].price = value.price;
+                        newModel.combinations[index].cost = value.cost;
+                        newModel.combinations[index].quantity = value.quantity;
                         setModel(newModel);
                       }}
-                      onDelete={(attrIdx, valIdx) => {
+                      onDelete={index => {
                         const newModel = { ...model };
-                        const attribute = newModel.attributes[attrIdx];
-                        attribute.values.splice(valIdx, 1);
-                        if (!attribute.values.length) {
-                          newModel.attributes.splice(attrIdx, 1);
-                        }
+                        newModel.combinations.splice(index, 1);
                         setModel(newModel);
                       }}
                     />
                   </GridItem>
                   <GridItem xs={12} lg={5}>
-                    <AttributeGenerator
+                    <CombinationGenerator
                       attributes={attributes}
-                      onGenerate={treeData => {
-                        const newModel = { ...model };
-                        newModel.attributes = [];
-                        treeData.forEach(({ attrIdx, valIndices }) => {
-                          const attribute = {
-                            name: attributes[attrIdx].name,
-                            nameEN: attributes[attrIdx].nameEN,
-                            values: []
-                          };
-                          valIndices.forEach(valIdx => {
-                            const { name, nameEN } = attributes[attrIdx].values[
-                              valIdx
-                            ];
-                            const { price, cost } = newModel;
-                            attribute.values.push({
-                              name: name || "",
-                              nameEN: nameEN || "",
-                              price: price || 0,
-                              cost: cost || 0,
-                              quantity: newModel.stock.quantity || 0
-                            });
+                      onGenerate={groupData => {
+                        const values = getAllCombinations(groupData);
+                        const combinations = [];
+                        values.forEach(value => {
+                          combinations.push({
+                            values: value,
+                            price: model.price,
+                            cost: model.cost,
+                            quantity: model.stock.quantity
                           });
-                          newModel.attributes.push(attribute);
+                        });
+                        const newModel = { ...model };
+                        newModel.combinations = combinations;
+                        newModel.attributes = groupData.map(({ attrIdx }) => {
+                          return attributes.find(({ _id }) => _id === attrIdx);
                         });
                         setModel(newModel);
                       }}
@@ -751,10 +754,9 @@ const EditProduct = ({ match, history }) => {
   );
 };
 
-EditAttributeValueRow.propTypes = {
+EditCombinationRow.propTypes = {
   row: PropTypes.shape({
-    attrName: PropTypes.string,
-    valName: PropTypes.string,
+    combinationDescription: PropTypes.string,
     price: PropTypes.number,
     cost: PropTypes.number,
     quantity: PropTypes.number
@@ -763,14 +765,15 @@ EditAttributeValueRow.propTypes = {
   onCancel: PropTypes.func
 };
 
-AttributeTable.propTypes = {
+CombinationTable.propTypes = {
   attributes: PropTypes.array,
+  combinations: PropTypes.array,
   processing: PropTypes.bool,
   onDelete: PropTypes.func,
   onSave: PropTypes.func
 };
 
-AttributeGenerator.propTypes = {
+CombinationGenerator.propTypes = {
   attributes: PropTypes.array,
   onGenerate: PropTypes.func
 };

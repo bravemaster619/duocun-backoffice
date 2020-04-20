@@ -47,24 +47,52 @@ export const buildPaginationQuery = (
   return JSON.stringify(query);
 };
 
-export const treefyAttributeData = flatData => {
-  const treeData = [];
+export const groupAttributeData = flatData => {
+  const groupData = [];
   flatData.forEach(data => {
-    const dataInTree = treeData.find(
-      treeData => treeData.attrIdx === data.attrIdx
+    const dataInGroup = groupData.find(
+      groupData => groupData.attrIdx === data.attrIdx
     );
-    if (dataInTree) {
-      if (dataInTree.valIndices) {
-        dataInTree.valIndices.push(data.valIdx);
+    if (dataInGroup) {
+      if (dataInGroup.valIndices) {
+        dataInGroup.valIndices.push(data.valIdx);
       } else {
-        dataInTree.valIndices = [data.valIdx];
+        dataInGroup.valIndices = [data.valIdx];
       }
     } else {
-      treeData.push({
+      groupData.push({
         attrIdx: data.attrIdx,
         valIndices: [data.valIdx]
       });
     }
   });
-  return treeData;
+  return groupData;
+};
+
+export const getAllCombinations = groupData => {
+  if (!groupData.length) {
+    return [];
+  }
+  if (groupData.length === 1) {
+    return groupData[0].valIndices.map(valIdx => [
+      {
+        attrIdx: groupData[0].attrIdx,
+        valIdx
+      }
+    ]);
+  }
+  const result = [];
+  const restCombinations = getAllCombinations(groupData.slice(1));
+  for (let i = 0; i < restCombinations.length; i++) {
+    for (let j = 0; j < groupData[0].valIndices.length; j++) {
+      result.push([
+        {
+          attrIdx: groupData[0].attrIdx,
+          valIdx: groupData[0].valIndices[j]
+        },
+        ...restCombinations[i]
+      ]);
+    }
+  }
+  return result;
 };
