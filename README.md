@@ -5,6 +5,9 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![HitCount](http://hits.dwyl.com/bravemaster619/duocun-backoffice.svg)](http://hits.dwyl.com/bravemaster619/duocun-backoffice)
 
+# Important
+This repository is no longer supported. Migrated to [duocun/duocun-backoffice](https://github.com/duocun/duocun-backoffice)
+
 # Overview
 
 Dashboard with extra features for [duocun.ca](https://duocun.ca).
